@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Material create</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Material</button>
+</form>
+<a href="{% url 'materials:material-list' %}">Back to Materials List</a>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h1>Materials</h1>
+<a href="{% url 'materials:material-create' %}">Add New Material</a>
+{% for material in materials %}
+    <div class="material-item">
+        <h2>{{ material.name }}</h2>
+        <p>{{ material.description }}</p>
+        <p><em>Created at: {{ material.created_at }}</em></p>
+        <p><em>Last updated: {{ material.updated_at }}</em></p>
+        {% if material.image %}
+            <img src="{{ material.image.url }}" alt="{{ material.name }}" style="max-width: 200px;"><br>
+        {% elif material.video %}
+            <video width="640" controls>
+                <source src="{{ material.video.url }}" type="video/mp4">
+            </video>
+        {% endif %}
+        {% if user.is_authenticated and user.profile.role in 'admin, moderator' %}
+            <a href="{% url 'materials:material-update' material.id %}">Update</a>
+            <a href="{% url 'materials:material-delete' material.id %}">Delete</a>
+        {% endif %}
+    </div>
+{% empty %}
+    <p>No materials available.</p>
+{% endfor %}
+
+{% endblock %}
