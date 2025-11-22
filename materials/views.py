@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Material
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView
+from .forms import MaterialForm, MaterialUpdateForm
 
 # Create your views here.
 
@@ -11,15 +12,15 @@ class MaterialListView(ListView):
     
 class MaterialCreateView(CreateView):
     model = Material
-    fields = ['name', 'description', 'image', 'video']
     template_name = 'materials/material_create.html'
     success_url = '/materials/'
+    form_class = MaterialForm
 
 class MaterialUpdateView(UpdateView):
     model = Material
-    fields = ['name', 'description', 'image', 'video']
     template_name = 'materials/material_update.html'
     success_url = '/materials/'
+    form_class = MaterialUpdateForm
 
 class MaterialDeleteView(DeleteView):
     model = Material
