@@ -23,6 +23,6 @@ class MaterialUpdateView(UpdateView):
     form_class = MaterialUpdateForm
 
 class MaterialDeleteView(DeleteView):
-    model = Material
+    model = Material    
     template_name = 'materials/material_confirm_delete.html'
     success_url = '/materials/'
