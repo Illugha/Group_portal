@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Новини</h1>
+{% if user.is_superuser %}
+    <a href="{% url 'announcements:announcement-create' %}">Создать объявление</a>
+{% endif %}
+<ul>
+    {% for announcement in announcements %}
+    <li>
+        <h2>{{ announcement.title }}</h2>
+        <p>{{ announcement.content }}</p>
+        {% if announcement.photo %}
+        <img src="{{ announcement.photo.url }}" alt="Announcement Photo" style="max-width: 350px; height: auto;">
+        {% endif %}
+        <p><em>Автор: {{ announcement.owner }}  Опубліковано: {{ announcement.created_at }}</em></p>
+        {% if user.is_superuser %}
+            <a href="{% url 'announcements:announcement-update' announcement.pk %}">Редагувати</a>
+            <a href="{% url 'announcements:announcement-delete' announcement.pk %}">Видалити</a>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

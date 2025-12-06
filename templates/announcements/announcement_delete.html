@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if user.is_superuser %}
+    <h2>Удалить объявление</h2>
+    <p>Вы уверены, что хотите удалить объявление "{{ announcement.title }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Удалить</button>
+        <a href="{% url 'announcements:announcement-list' %}">Отмена</a>
+    </form>
+    {% else %}
+    <h2>Доступ запрещен</h2>
+    {% endif %}
+{% endblock %}
