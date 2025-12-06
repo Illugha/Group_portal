@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Polls</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% for form in answers %}
+            {{ form.as_p }}
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Add answers</button>
+    </form>
+    <a href="{% url 'polls:question-create' poll.id %}">Back</a>
+{% endblock %}

@@ -29,6 +29,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Галерея</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'polls:poll-list' %}">Опитування</a>
+                </li>
             </ul>
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}

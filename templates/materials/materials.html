@@ -21,12 +21,10 @@
                     {% if material.image %}
                         <img src="{{ material.image.url }}" alt="{{ material.name }}" style="max-width: 200px;"><br>
 
-                    {% elif material.youtube_url %}
-                        {% with material.youtube_url|cut:"https://www.youtube.com/watch?v=" as video_id %}
-                            <iframe width="640" height="360"
-                                    src="https://www.youtube.com/embed/{{ video_id }}"
-                                    frameborder="0" allowfullscreen></iframe>
-                        {% endwith %}
+                    {% elif material.url %}
+                        <iframe width="640" height="360"
+                                src="https://www.youtube.com/embed/{{ material.get_youtube_id }}"
+                                frameborder="0" allowfullscreen></iframe>
 
                     {% elif material.video %}
                         <video width="640" controls>
