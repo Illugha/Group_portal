@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Poll, Question, Answer
 from django.urls import reverse_lazy
 from django.views.generic import View, CreateView, ListView, DetailView, UpdateView, DeleteView
@@ -38,31 +38,34 @@ class QuestionCreateView(CreateView):
     def get_success_url(self):
         return reverse_lazy('polls:answer-create', kwargs={'question_id': self.object.id, 'poll_id': self.object.poll.id})
 
-class AnswerCreateView(CreateView):
+class AnswerCreateView(View):
     template_name = 'polls/answer_form.html'
-    model = Answer
-    form_class = Answers_set
 
-    def form_valid(self, form):
-        question_id = self.kwargs['question_id']
-        form.instance.question = Question.objects.get(id=question_id)
-        form.save()
-        return super().form_valid(form)
+    def get(self, request, question_id, poll_id):
+        question = Question.objects.get(id=question_id)
+        poll = Poll.objects.get(id=poll_id)
+        formset = Answers_set(instance=question)
+        return render(request, self.template_name, {
+            'answers': formset,
+            'question': question,
+            'poll': poll,
+        })
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        question_id = self.kwargs['question_id']
-        poll_id = self.kwargs['poll_id']
-        context['poll'] = Poll.objects.get(id=poll_id)
-        context['question'] = Question.objects.get(id=question_id)
-        if self.request.POST:
-            context['answers'] = Answers_set(self.request.POST, instance=context['question'])
-        else:
-            context['answers'] = Answers_set(instance=context['question'])
-        return context
+    def post(self, request, question_id, poll_id):
+        question = Question.objects.get(id=question_id)
+        poll = Poll.objects.get(id=poll_id)
+        formset = Answers_set(request.POST, instance=question)
 
-    def get_success_url(self):
-        return reverse_lazy('polls:poll-list')
+        if formset.is_valid():
+            formset.save()  # Зберігаємо всі відповіді
+            return redirect('polls:poll-list')  # Перекидання на список опитувань
+
+        # Якщо є помилки — показуємо знову з помилками
+        return render(request, self.template_name, {
+            'answers': formset,
+            'question': question,
+            'poll': poll,
+        })
 
 class PollDetailView(DetailView):
     template_name = 'polls/poll_detail.html'
