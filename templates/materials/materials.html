@@ -21,17 +21,28 @@
                     {% if material.image %}
                         <img src="{{ material.image.url }}" alt="{{ material.name }}" style="max-width: 200px;"><br>
 
-                    {% elif material.url %}
-                        <iframe width="640" height="360"
-                                src="https://www.youtube.com/embed/{{ material.get_youtube_id }}"
-                                frameborder="0" allowfullscreen></iframe>
+                    {% elif material.url and material.get_youtube_id %}
+                        <iframe 
+                            width="640" height="360"
+                            src="https://www.youtube.com/embed/{{ material.get_youtube_id }}?rel=0&showinfo=0&autoplay=0"
+                            title="{{ material.name }}"
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
 
                     {% elif material.video %}
                         <video width="640" controls>
                             <source src="{{ material.video.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
                         </video><br>
-                    {% endif %}
 
+                    {% elif material.url %}
+                        <!-- Якщо URL не YouTube або ID не знайдено -->
+                        <p class="text-danger">Помилка: Некоректний YouTube URL. Перевірте посилання.</p>
+                        <a href="{{ material.url }}" target="_blank">Відкрити оригінальне відео</a>
+
+                    {% endif %}
 
                     <p class="mt-2">
                     <em>Created at: {{ material.created_at }}</em><br>
