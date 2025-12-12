@@ -18,12 +18,17 @@ from django.conf import settings# dlya os
 from django.conf.urls.static import static
 from django.urls import path, include
 from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('gallery.urls')),
-]
-
-# Добавь это в конец файла:
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('', include('core.urls', namespace='core')),
+    path('materials/', include('materials.urls', namespace='materials')),
+    path('polls/', include('polls.urls', namespace='materials')),
+    path('forum/', include('forum.urls', namespace='forum')),
+    path('gallery/', include('gallery.urls', namespace='gallery')),
+    path('portfolio/', include('portfolio.urls', namespace='portfolio')),
+    path('accounts/', include('django.contrib.auth.urls')),  # Для login/logout
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

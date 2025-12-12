@@ -1,0 +1,12 @@
+.navbar-brand img {
+    max-height: 40px;
+}
+
+.profile-img {
+    max-width: 150px;
+    border-radius: 50%;
+}
+
+.container {
+     margin-top: 20px;
+}
