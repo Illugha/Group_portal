@@ -22,6 +22,10 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls', namespace='core')),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('forum/', include('forum.urls'))  # Для login/logout
+    path('materials/', include('materials.urls', namespace='materials')),
+    path('polls/', include('polls.urls', namespace='materials')),
+    path('forum/', include('forum.urls', namespace='forum')),
+    path('gallery/', include('gallery.urls', namespace='gallery')),
+    path('portfolio/', include('portfolio.urls', namespace='portfolio')),
+    path('accounts/', include('django.contrib.auth.urls')),  # Для login/logout
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
