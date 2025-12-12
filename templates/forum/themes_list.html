@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}{{ group.name }}{% endblock %}
+{% block content %}
+<form method="get">
+    {{ form.topic }}
+    <button type="submit">Фільтрувати</button>
+</form>
+<a href="{%url 'theme-creation'%}">Створити свою</a>
+<ul>
+    {% for theme in themes %}
+    <br>
+    <h2>{{theme.topic}}</h2>
+    <h3><a href='{% url "theme-detail" theme.pk%}'> {{theme.question}}</a></h3>
+    {% endfor %}
+</ul>
+
+{% endblock %}
