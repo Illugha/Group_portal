@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Answering to questions</h1>
+    <h2>{{ poll.title }}</h2>
+    <p>{{ poll.description }}</p>
+    <form method="post">
+        {% csrf_token %}
+        {% for question in poll.questions.all %}
+            <div>
+            <p><strong>{{ question.question_text }}</strong></p>
+            {% for answer in question.answers.all %}
+                <div>
+                <input type="radio" name="question_{{ question.id }}" value="{{ answer.id }}" id="answer_{{ answer.id }}">
+                <label for="answer_{{ answer.id }}">{{ answer.answer_text }}</label>
+                </div>
+            {% endfor %}
+            </div>
+        {% endfor %}
+        <button type="submit">Submit Answers</button>
+    </form>
+{% endblock %}

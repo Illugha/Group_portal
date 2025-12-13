@@ -5,6 +5,14 @@ class MaterialForm(ModelForm):
     class Meta:
         model = Material
         fields = ['name', 'description', 'image', 'video', 'url']
+        labels = {
+            'name': 'Назва',
+            'description': 'Опис',
+            'image': 'Зображення',
+            'video': 'Відео',
+            'url': 'Посилання',
+        }
+
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
@@ -17,6 +25,13 @@ class MaterialUpdateForm(ModelForm):
     class Meta:
         model = Material
         fields = ['name', 'description', 'image', 'video', 'url']
+        labels = {
+            'name': 'Назва',
+            'description': 'Опис',
+            'image': 'Зображення',
+            'video': 'Відео',
+            'url': 'Посилання',
+        }
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),

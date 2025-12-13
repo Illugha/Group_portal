@@ -6,12 +6,17 @@
   {% endif %}
   <ul>
     {% for poll in polls %}
-      <li>{{ poll.title }} - {{ poll.description }}
+      <li>
+        <a href="{% url 'polls:poll-detail' poll.id %}">{{ poll.title }} - {{ poll.description }}</a>
+      </li>
       {% for question in poll.questions.all %}
         <p>Question: {{ question.question_text }}</p>
         {% for answer in question.answers.all %}
           <p>Answer: {{ answer }}</p>
         {% endfor %}
+        {% if user.is_authenticated and user.profile.role in 'admin, moderator' %}
+          <a href="{% url 'polls:poll-delete' poll.id %}">Delete poll</a>
+        {% endif %}
       {% endfor %}
       </li>
     {% empty %}

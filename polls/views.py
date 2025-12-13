@@ -69,12 +69,6 @@ class PollDetailView(DetailView):
     model = Poll
     context_object_name = 'poll'
 
-class PollUpdateView(UpdateView):
-    template_name = 'polls/poll_form.html'
-    model = Poll
-    fields = ['title', 'description', ]
-    success_url = '/polls/'
-
 class PollDeleteView(DeleteView):
     template_name = 'polls/poll_confirm_delete.html'
     model = Poll
