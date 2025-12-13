@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Новини</h1>
+<h1>Оголошення</h1>
 {% if user.is_superuser %}
-    <a href="{% url 'announcements:announcement-create' %}">Создать объявление</a>
+    <a class="btn btn-primary" href="{% url 'announcements:announcement-create' %}" style="width: 200px hight: 200px " >Создать объявление</a>
 {% endif %}
 <ul>
     {% for announcement in announcements %}
@@ -12,10 +12,11 @@
         {% if announcement.photo %}
         <img src="{{ announcement.photo.url }}" alt="Announcement Photo" style="max-width: 350px; height: auto;">
         {% endif %}
-        <p><em>Автор: {{ announcement.owner }}  Опубліковано: {{ announcement.created_at }}</em></p>
+        Автор: {{ announcement.owner }}
+        <p>Опубліковано: {{ announcement.created_at }}</p>
         {% if user.is_superuser %}
-            <a href="{% url 'announcements:announcement-update' announcement.pk %}">Редагувати</a>
-            <a href="{% url 'announcements:announcement-delete' announcement.pk %}">Видалити</a>
+            <a class="btn btn-success" href="{% url 'announcements:announcement-update' announcement.pk %}">Редагувати</a>
+            <a class="btn btn-danger" href="{% url 'announcements:announcement-delete' announcement.pk %}">Видалити</a>
         {% endif %}
     </li>
     {% endfor %}
