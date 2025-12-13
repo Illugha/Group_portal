@@ -33,11 +33,11 @@ class VoteForm(forms.ModelForm):
             'start_date': forms.DateTimeInput(attrs={
                 'class': 'form-control',
                 'type': 'datetime-local'
-            }),
+            }, format='%Y-%m-%dT%H:%M'),
             'end_date': forms.DateTimeInput(attrs={
                 'class': 'form-control',
                 'type': 'datetime-local'
-            }),
+            }, format='%Y-%m-%dT%H:%M'),
             'allow_revote': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
             }),
@@ -55,11 +55,38 @@ class VoteForm(forms.ModelForm):
             'is_anonymous': 'Анонімне голосування'
         }
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Робимо дати необов'язковими
+        self.fields['start_date'].required = False
+        self.fields['end_date'].required = False
+        
+        # Додаємо підтримку різних форматів дати
+        self.fields['start_date'].input_formats = [
+            '%Y-%m-%dT%H:%M',  # 2025-11-29T15:00 (datetime-local)
+            '%d.%m.%Y %H:%M',  # 29.11.2025 15:00
+            '%Y-%m-%d %H:%M',  # 2025-11-29 15:00
+        ]
+        self.fields['end_date'].input_formats = [
+            '%Y-%m-%dT%H:%M',
+            '%d.%m.%Y %H:%M',
+            '%Y-%m-%d %H:%M',
+        ]
+        
+        # Додаємо placeholder
+        self.fields['start_date'].widget.attrs.update({
+            'placeholder': '29.11.2025 15:00 або залиште пустим'
+        })
+        self.fields['end_date'].widget.attrs.update({
+            'placeholder': '30.11.2025 23:59 або залиште пустим'
+        })
+    
     def clean(self):
         cleaned_data = super().clean()
         start_date = cleaned_data.get('start_date')
         end_date = cleaned_data.get('end_date')
         
+        # Валідація дат тільки якщо обидва поля заповнені
         if start_date and end_date:
             if end_date <= start_date:
                 raise forms.ValidationError(
@@ -78,11 +105,13 @@ class VoteOptionForm(forms.ModelForm):
         widgets = {
             'text': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Варіант відповіді'
+                'placeholder': 'Варіант відповіді',
+                'required': 'required'
             }),
             'order': forms.NumberInput(attrs={
                 'class': 'form-control',
-                'min': '0'
+                'min': '0',
+                'value': '0'
             })
         }
         labels = {
@@ -96,10 +125,15 @@ VoteOptionFormSet = inlineformset_factory(
     Vote,
     VoteOption,
     form=VoteOptionForm,
-    extra=3,  # Кількість пустих форм
+    extra=3,  # 3 порожні форми за замовчуванням
     min_num=2,  # Мінімум 2 варіанти
     validate_min=True,
-    can_delete=True
+    can_delete=True,
+    max_num=10,  # Максимум 10 варіантів
+    error_messages={
+        'too_few_forms': 'Необхідно додати мінімум 2 варіанти відповіді.',
+        'too_many_forms': 'Максимальна кількість варіантів - 10.',
+    }
 )
 
 

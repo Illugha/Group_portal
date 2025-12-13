@@ -60,7 +60,6 @@ class VoteDetailView(LoginRequiredMixin, DetailView):
         
         # Додаємо статистику
         context['total_votes'] = vote.total_votes()
-        context['unique_voters'] = vote.unique_voters()
         
         # Додаємо форму для голосування
         if context['can_vote']:
@@ -117,24 +116,47 @@ class VoteCreateView(LoginRequiredMixin, ModeratorRequiredMixin, CreateView):
         if self.request.POST:
             context['option_formset'] = VoteOptionFormSet(self.request.POST)
         else:
-            context['option_formset'] = VoteOptionFormSet()
+            # Створюємо formset з додатковими порожніми формами
+            context['option_formset'] = VoteOptionFormSet(
+                queryset=VoteOption.objects.none()
+            )
         return context
     
     def form_valid(self, form):
         context = self.get_context_data()
         option_formset = context['option_formset']
         
+        # Виводимо дані для дебагу
+        print("="*50)
+        print("POST data:", self.request.POST)
+        print("Form valid:", form.is_valid())
+        print("Formset valid:", option_formset.is_valid())
+        if not option_formset.is_valid():
+            print("Formset errors:", option_formset.errors)
+            print("Formset non-form errors:", option_formset.non_form_errors())
+        print("="*50)
+        
+        # СПОЧАТКУ перевіряємо formset
+        if not option_formset.is_valid():
+            # Показуємо помилки користувачу
+            for i, form_errors in enumerate(option_formset.errors):
+                if form_errors:
+                    messages.error(self.request, f"Помилка у варіанті {i+1}: {form_errors}")
+            if option_formset.non_form_errors():
+                for error in option_formset.non_form_errors():
+                    messages.error(self.request, str(error))
+            # НЕ створюємо Vote, повертаємо форму з помилками
+            return self.form_invalid(form)
+        
+        # Тільки якщо все валідно - створюємо Vote
         with transaction.atomic():
             form.instance.created_by = self.request.user
             self.object = form.save()
             
-            if option_formset.is_valid():
-                option_formset.instance = self.object
-                option_formset.save()
-                messages.success(self.request, "Голосування успішно створено!")
-                return super().form_valid(form)
-            else:
-                return self.form_invalid(form)
+            option_formset.instance = self.object
+            option_formset.save()
+            messages.success(self.request, "Голосування успішно створено!")
+            return super().form_valid(form)
     
     def form_invalid(self, form):
         messages.error(self.request, "Помилка при створенні голосування. Перевірте дані.")
@@ -187,7 +209,7 @@ class VoteDeleteView(LoginRequiredMixin, ModeratorRequiredMixin, DeleteView):
 class VoteResultsView(LoginRequiredMixin, DetailView):
     """Перегляд результатів голосування"""
     model = Vote
-    template_name = 'voting/vote_results.html'
+    template_name = 'voting/vote_results.html'  # З 's' - стандартна назва
     context_object_name = 'vote'
     
     def get_context_data(self, **kwargs):
@@ -205,7 +227,6 @@ class VoteResultsView(LoginRequiredMixin, DetailView):
         
         context['options_stats'] = options_stats
         context['total_votes'] = vote.total_votes()
-        context['unique_voters'] = vote.unique_voters()
         
         # Якщо голосування не анонімне і користувач - модератор
         if not vote.is_anonymous and (self.request.user.is_staff or 

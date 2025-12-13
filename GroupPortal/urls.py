@@ -23,4 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls', namespace='core')),
     path('accounts/', include('django.contrib.auth.urls')),  # Для login/logout
+    path('voting/', include("voting.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

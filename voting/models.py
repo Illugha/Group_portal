@@ -18,10 +18,10 @@ class Vote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата створення")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата оновлення")
 
-    #Додаткові поля для розширеного функціоналу
+    # Додаткові поля для розширеного функціоналу
     is_active = models.BooleanField(default=True, verbose_name="Активне")
     start_date = models.DateTimeField(null=True, blank=True, verbose_name="Дата початку")
-    end_date = models.BooleanField(default=True, blank=True, verbose_name="Дата завершення")
+    end_date = models.DateTimeField(null=True, blank=True, verbose_name="Дата завершення")  # ВИПРАВЛЕНО
     allow_revote = models.BooleanField(default=True, verbose_name="Дозволити переголосування")
     is_anonymous = models.BooleanField(default=False, verbose_name="Анонімне голосування")
 
@@ -42,18 +42,29 @@ class Vote(models.Model):
             
     def is_open(self):
         """Перевірка, чи відкрите голосування"""
-        if not self.is_acitve:
+        if not self.is_active:
             return False
+        
         now = timezone.now()
+        
+        # Якщо є дата початку і вона ще не настала
         if self.start_date and now < self.start_date:
             return False
+        
+        # Якщо є дата завершення і вона вже минула
         if self.end_date and now > self.end_date:
             return False
+        
+        # Якщо немає дат або вони в допустимому діапазоні
         return True
     
     def total_votes(self):
         """Загальна кількість голосів"""
         return VoteResponse.objects.filter(vote_option__vote=self).values('user').distinct().count()
+    
+    def unique_voters(self):
+        """Кількість унікальних користувачів, які проголосували"""
+        return self.total_votes()  # По суті це те саме
     
 
 class VoteOption(models.Model):
