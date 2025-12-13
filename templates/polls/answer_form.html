@@ -1,12 +1,30 @@
+<!-- answer_form.html -->
 {% extends 'base.html' %}
 {% block content %}
-  <h1>Polls</h1>
-    <form method="post">
-        {% csrf_token %}
-        {% for form in answers %}
-            {{ form.as_p }}
-        {% endfor %}
-        <button type="submit" class="btn btn-primary">Add answers</button>
-    </form>
-    <a href="{% url 'polls:question-create' poll.id %}">Back</a>
+  <h1>Add answers for: "{{ question.question_text }}"</h1>
+  <p>Poll: <strong>{{ poll.title }}</strong></p>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ answers.management_form }}  <!-- ОБОВ'ЯЗКОВО! -->
+
+    {% for form in answers %}
+      <div class="border p-3 mb-3 rounded">
+        {{ form.id }}  <!-- приховане поле id (для оновлення/видалення) -->
+        <div class="form-group">
+          {{ form.answer_text }}
+          {% if form.answer_text.errors %}
+            <small class="text-danger">{{ form.answer_text.errors }}</small>
+          {% endif %}
+        </div>
+        {% if form.instance.pk %}
+          {{ form.DELETE }} <label for="{{ form.DELETE.id_for_label }}">Delete</label>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-success">Save answers</button>
+    <a href="{% url 'polls:question-create' poll.id %}" class="btn btn-secondary">Back to add question</a>
+    <a href="{% url 'polls:poll-list' %}" class="btn btn-outline-primary">To poll list</a>
+  </form>
 {% endblock %}
