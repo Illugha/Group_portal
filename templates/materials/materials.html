@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+    <div class="card shadow-sm p-3 mb-5 bg-body rounded">
+        <div class="card-body">
+            <h1 class="card-title mb-3">Materials</h1>
+
+            {% if user.is_authenticated and user.profile.role in 'admin, moderator' %}
+                <a href="{% url 'materials:material-create' %}" class="btn btn-success mb-2 mt-2">Add New Material</a>
+            {% endif %}
+
+            {% for material in materials %}
+                <div class="material-item">
+                    <h2>{{ material.name }}</h2>
+                    <p>{{ material.description }}</p>
+
+                    {% if material.image %}
+                        <img src="{{ material.image.url }}" alt="{{ material.name }}" style="max-width: 200px;"><br>
+
+                    {% elif material.url and material.get_youtube_id %}
+                        <iframe 
+                            width="640" height="360"
+                            src="https://www.youtube.com/embed/{{ material.get_youtube_id }}?rel=0&showinfo=0&autoplay=0"
+                            title="{{ material.name }}"
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+
+                    {% elif material.video %}
+                        <video width="640" controls>
+                            <source src="{{ material.video.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video><br>
+
+                    {% elif material.url %}
+                        <!-- Якщо URL не YouTube або ID не знайдено -->
+                        <p class="text-danger">Помилка: Некоректний YouTube URL. Перевірте посилання.</p>
+                        <a href="{{ material.url }}" target="_blank">Відкрити оригінальне відео</a>
+
+                    {% endif %}
+
+                    <p class="mt-2">
+                    <em>Created at: {{ material.created_at }}</em><br>
+                    <em>Last updated: {{ material.updated_at }}</em>
+                    </p>
+
+                    {% if user.is_authenticated and user.profile.role in 'admin, moderator' %}
+                        <a href="{% url 'materials:material-update' material.id %}" class="btn btn-primary mb-4">Update</a>
+                        <a href="{% url 'materials:material-delete' material.id %}" class="btn btn-danger ms-1 mb-4">Delete</a>
+                    {% endif %}
+                </div>
+                {% if not forloop.last %}
+                    <hr class="thick-line">
+                {% endif %}
+
+            {% empty %}
+                <p>No materials available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .thick-line {
+        border-top: 3px solid #000000;
+        margin: 20px 0;
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}{{ group.name }}{% endblock %}
+{% block content %}
+<a href="{% url 'theme-list' %}">Назад до списку</a>
+<h1>{{theme.question}}</h1>
+<h2>{{theme.topic}}</h2>
+<p>{{theme.other_content}}</p>
+<!-- <img> -->
+ 
+<a href="{% url 'post-creation' theme.pk %}">Коментувати</a>
+
+{% if user.is_authenticated and user.profile.role in "admin moderator" %}
+    <h3>Для модераторів</h3>
+    <a href="{% url 'theme-deletion' theme.pk %}">Видалити</a>
+    <a href="{% url 'theme-updation' theme.pk %}">Змінити</a>
+{% endif %}
+
+
+{% for post in posts %}
+    <div class="post">
+        <p>{{ post.content }}</p>
+        <p>Автор: {{ post.owner.username }}</p>
+        <p>Реакція: {{ post.reaction }}</p>
+
+        <!-- {% if post.media %}
+            <img src="{{ post.media.url }}" alt="">
+        {% endif %} -->
+    </div>
+{% empty %}
+    <p>Постів ще немає</p>
+{% endfor %}
+
+
+{% endblock %}

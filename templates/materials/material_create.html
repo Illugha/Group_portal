@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid material-container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="card-title display-6 mb-3">Material create</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">Create Material</button>
+            </form>
+            <a href="{% url 'materials:material-list' %}" class="btn btn-secondary mt-2">Back to Materials List</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .material-container {
+        max-width: 1050px;
+    }
+</style>
+
+{% endblock %}
