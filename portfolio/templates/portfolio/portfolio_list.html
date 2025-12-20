@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Портфоліо</title>
+</head>
+<body>
+    <h1>Портфоліо</h1>
+    {% if user.is_authenticated %}
+        <p><a href="{% url 'portfolio:create' %}">Створити нове портфоліо</a></p>
+    {% endif %}
+    <ul>
+    {% for p in portfolios %}
+        <li>
+            <a href="{% url 'portfolio:detail' p.pk %}">{{ p.title }}</a>
+            — {{ p.owner }}
+        </li>
+    {% empty %}
+        <li>Немає проектів</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
