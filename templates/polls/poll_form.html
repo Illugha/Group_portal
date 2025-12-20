@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Poll create</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Next</button>
+    </form>
+    <a href="{% url 'polls:poll-list' %}" class="btn btn-secondary mt-2">Back to Polls List</a>
+{% endblock %}
