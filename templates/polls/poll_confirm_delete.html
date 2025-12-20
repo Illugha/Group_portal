@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1>Confirm Delete Poll</h1>
-  <p>Are you sure you want to delete the poll "{{ poll.question }}"?</p>
+  <h1>Підтвердження видалення опитування</h1>
+  <p>Ви впевнені, що хочете видалити опитування "{{ poll.question }}"?</p>
   <form method="post">
     {% csrf_token %}
-    <button type="submit">Yes, delete</button>
-    <a href="{% url 'polls:poll-list' %}">Cancel</a>
+    <button type="submit">Так, видалити</button>
+    <a href="{% url 'polls:poll-list' %}">Відмінити</a>
   </form>
 {% endblock %}

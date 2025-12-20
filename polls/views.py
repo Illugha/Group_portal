@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Poll, Question, Answer
+from .models import Poll, Question, Answer, UserResponse
 from django.urls import reverse_lazy
 from django.views.generic import View, CreateView, ListView, DetailView, UpdateView, DeleteView
 from .forms import Answers_set
@@ -71,6 +71,24 @@ class PollDetailView(DetailView):
     template_name = 'polls/poll_detail.html'
     model = Poll
     context_object_name = 'poll'
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        poll = self.object
+        if UserResponse.objects.filter(user=request.user, question__poll=poll).exists():
+            return redirect('polls:poll-list')  # Користувач вже відповів на це опитування
+        for question in poll.questions.all():
+            selected_answer_id = request.POST.get(f'question_{question.id}')
+            if selected_answer_id:
+                answer = question.answers.get(id=selected_answer_id)
+                answer.votes += 1
+                answer.save()
+                UserResponse.objects.create(
+                    user=request.user,
+                    question=question,
+                    selected_answer=answer
+                )
+        return redirect('polls:poll-list')
 
 class PollDeleteView(DeleteView):
     template_name = 'polls/poll_confirm_delete.html'
