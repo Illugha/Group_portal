@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Видалити голосування{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'voting:vote_list' %}">Голосування</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'voting:vote_detail' vote.pk %}">{{ vote.title }}</a></li>
+            <li class="breadcrumb-item active">Видалити</li>
+        </ol>
+    </nav>
+
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <h2 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Підтвердження видалення</h2>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <h5><i class="bi bi-exclamation-triangle-fill"></i> Увага!</h5>
+                <p class="mb-0">
+                    Ви дійсно хочете видалити це голосування? Ця дія незворотна!
+                </p>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4>{{ vote.title }}</h4>
+                    <p class="text-muted">{{ vote.description|truncatewords:50 }}</p>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Створено:</strong> {{ vote.created_by.username }}</p>
+                            <p><strong>Дата створення:</strong> {{ vote.created_at|date:"d.m.Y H:i" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Всього голосів:</strong> {{ vote.total_votes }}</p>
+                            <p><strong>Варіантів відповідей:</strong> {{ vote.options.count }}</p>
+                        </div>
+                    </div>
+
+                    {% if vote.total_votes > 0 %}
+                    <div class="alert alert-warning mt-3">
+                        <i class="bi bi-exclamation-circle"></i>
+                        <strong>Це голосування містить {{ vote.total_votes }} голос{{ vote.total_votes|pluralize:"ів" }}!</strong>
+                        Всі дані будуть втрачені назавжди.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        <i class="bi bi-trash"></i> Так, видалити назавжди
+                    </button>
+                    <a href="{% url 'voting:vote_detail' vote.pk %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-x-circle"></i> Ні, скасувати
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

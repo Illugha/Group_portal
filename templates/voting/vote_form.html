@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if is_update %}Редагувати{% else %}Створити{% endif %} голосування{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'voting:vote_list' %}">Голосування</a></li>
+            <li class="breadcrumb-item active">
+                {% if is_update %}Редагувати{% else %}Створити{% endif %}
+            </li>
+        </ol>
+    </nav>
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">
+                {% if is_update %}Редагувати голосування{% else %}Створити нове голосування{% endif %}
+            </h2>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <!-- Основна інформація -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Основна інформація</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Назва голосування</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                            <div class="text-danger">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Опис</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                            <div class="text-danger">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Налаштування -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Налаштування</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Дата початку</label>
+                                {{ form.start_date }}
+                                {% if form.start_date.errors %}
+                                <div class="text-danger">{{ form.start_date.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    Залиште пустим для миттєвого початку.<br>
+                                    Формат: дд.мм.рррр гг:хх (наприклад: 29.11.2025 15:00)
+                                </small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Дата завершення</label>
+                                {{ form.end_date }}
+                                {% if form.end_date.errors %}
+                                <div class="text-danger">{{ form.end_date.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    Залиште пустим для необмеженого часу.<br>
+                                    Формат: дд.мм.рррр гг:хх (наприклад: 30.11.2025 23:59)
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            {{ form.is_active }}
+                            <label class="form-check-label">Активне</label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            {{ form.allow_revote }}
+                            <label class="form-check-label">Дозволити переголосування</label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            {{ form.is_anonymous }}
+                            <label class="form-check-label">Анонімне голосування</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Варіанти відповідей -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Варіанти відповідей (мінімум 2)</h5>
+                    </div>
+                    <div class="card-body">
+                        {{ option_formset.management_form }}
+                        
+                        {% if option_formset.non_form_errors %}
+                        <div class="alert alert-danger">
+                            {{ option_formset.non_form_errors }}
+                        </div>
+                        {% endif %}
+                        
+                        {% for option_form in option_formset %}
+                        <div class="mb-3 p-3 border rounded bg-light">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6>Варіант {{ forloop.counter }}</h6>
+                                {% if forloop.counter > 2 %}
+                                <button type="button" class="btn btn-sm btn-outline-danger delete-option">
+                                    <i class="bi bi-trash"></i> Видалити
+                                </button>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-10 mb-2">
+                                    <label class="form-label">Текст варіанту</label>
+                                    {{ option_form.text }}
+                                    {% if option_form.text.errors %}
+                                    <div class="text-danger small">{{ option_form.text.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-2 mb-2">
+                                    <label class="form-label">Порядок</label>
+                                    {{ option_form.order }}
+                                </div>
+                            </div>
+                            
+                            {{ option_form.id }}
+                            
+                            {% if option_form.instance.pk and option_formset.can_delete %}
+                            <div style="display: none;">
+                                {{ option_form.DELETE }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="alert alert-info mt-3">
+                            <strong>Підказка:</strong> Заповніть мінімум 2 варіанти відповіді. Порожні варіанти будуть проігноровані.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Помилки -->
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <!-- Кнопки -->
+                <div class="d-flex" style="gap: 10px;">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        {% if is_update %}Зберегти зміни{% else %}Створити голосування{% endif %}
+                    </button>
+                    <a href="{% url 'voting:vote_list' %}" class="btn btn-secondary btn-lg">Скасувати</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Обробник видалення варіантів
+    document.querySelectorAll('.delete-option').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const formDiv = this.closest('.mb-3');
+            const deleteCheckbox = formDiv.querySelector('input[name$="-DELETE"]');
+            
+            if (deleteCheckbox) {
+                // Існуюча форма - позначаємо для видалення
+                deleteCheckbox.checked = true;
+                formDiv.style.display = 'none';
+            } else {
+                // Нова форма - просто ховаємо
+                formDiv.style.display = 'none';
+                // Очищаємо поля
+                formDiv.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

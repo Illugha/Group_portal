@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Видалення теми{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card border-danger shadow-sm">
+                <div class="card-body text-center">
+
+                    <h4 class="text-danger mb-3">
+                        Підтвердження видалення
+                    </h4>
+
+                    <p class="mb-4">
+                        Ви впевнені, що хочете видалити це завдання?<br>
+                        <strong>Цю дію неможливо скасувати.</strong>
+                    </p>
+
+                    <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            Так, видалити
+                        </button>
+                    </form>
+
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary ms-2">
+                        Скасувати
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

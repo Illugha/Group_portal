@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<p>Ви впевнені, що хочете видалити цей матеріал: "{{ object.name }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Так, видалити</button>
+        <a href="{% url 'materials:material-list' %}" class="btn btn-dark">Ні, назад до списку матеріалів</a>
+    </form>
+</div>
+
+{% endblock %}

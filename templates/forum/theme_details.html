@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}{{ group.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Кнопка назад -->
+    <a href="{% url 'theme-list' %}" class="btn btn-outline-secondary mb-3">
+        ← Назад до списку
+    </a>
+
+    <!-- Карточка теми -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h3 class="card-title">{{ theme.question }}</h3>
+            <h6 class="text-muted">{{ theme.topic }}</h6>
+            <p class="card-text mt-3">{{ theme.other_content }}</p>
+            {% if theme.media %}
+                <p><img src="{{ theme.media.url }}" style="width: 40%; height: 40%;"></p>
+
+            
+            {% endif %}
+
+            <a href="{% url 'post-creation' theme.pk %}" class="btn btn-primary">
+                Коментувати
+            </a>
+
+            {% if user.is_authenticated and user.profile.role in "admin moderator" %}
+                <hr>
+                <h6 class="text-danger">Для модераторів</h6>
+                <a href="{% url 'theme-deletion' theme.pk %}" class="btn btn-outline-danger btn-sm">
+                    Видалити
+                </a>
+                <a href="{% url 'theme-updation' theme.pk %}" class="btn btn-outline-warning btn-sm">
+                    Змінити
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Коментарі -->
+    <h4 class="mb-3">Коментарі</h4>
+
+    {% for post in posts %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <p class="card-text">{{ post.content }}</p>
+
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted">
+                        Автор: {{ post.owner.username }}
+                    </small>
+                    <span class="badge bg-info">
+                        Реакція: {{ post.reaction }}
+                    </span>
+                </div>
+
+                {# 
+                {% if post.media %}
+                    <img src="{{ post.media.url }}" class="img-fluid rounded mt-2">
+                {% endif %}
+                #}
+            </div>
+        </div>
+    {% empty %}
+        <div class="alert alert-info">
+            Постів ще немає
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %}

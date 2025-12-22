@@ -1,0 +1,128 @@
+/* ===== BASIC STYLES ===== */
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f7;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+a {
+    color: #1381ff;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+h1, h2, h3 {
+    margin: 0;
+    padding: 5px 0;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* ===== FILTER FORM ===== */
+form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+form select,
+form button {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #bbb;
+}
+
+form button {
+    background: #1381ff;
+    color: white;
+    cursor: pointer;
+}
+form button:hover {
+    background: #0f6edc;
+}
+
+/* ===== THEME LIST ===== */
+ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+ul h2 {
+    font-size: 20px;
+    color: #666;
+}
+
+ul h3 a {
+    font-size: 22px;
+    color: #000;
+    font-weight: 600;
+}
+
+/* ===== SINGLE THEME PAGE ===== */
+.theme-header h1 {
+    font-size: 26px;
+    margin-bottom: 5px;
+}
+
+.theme-header h2 {
+    font-size: 20px;
+    color: #555;
+}
+
+/* ===== POSTS ===== */
+.post {
+    background: #fafafa;
+    border-left: 4px solid #1381ff;
+    padding: 12px 15px;
+    margin: 15px 0;
+    border-radius: 6px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.05);
+}
+
+.post p {
+    margin: 3px 0;
+}
+
+.post-author {
+    font-size: 14px;
+    color: #777;
+}
+
+/* ===== MODERATOR BLOCK ===== */
+.moder-block {
+    margin-top: 20px;
+    padding: 10px;
+    background: #ffe9e9;
+    border: 1px solid #ffb3b3;
+    border-radius: 6px;
+}
+
+.moder-block a {
+    margin-right: 15px;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+    display: inline-block;
+    padding: 7px 13px;
+    border-radius: 6px;
+    border: 1px solid #1381ff;
+    background: #1381ff;
+    color: #fff;
+    margin-top: 10px;
+}
+.btn:hover {
+    background: #0f6edc;
+}
