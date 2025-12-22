@@ -33,4 +33,5 @@ urlpatterns = [
     path('dairy/', include('diary.urls', namespace='dairy')),
     path('accounts/', include('django.contrib.auth.urls')),  # Для login/logout
     path('voting/', include("voting.urls")),
+    path('announcements/', include('announcements.urls', namespace='announcements')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

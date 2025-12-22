@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+{% if user.is_superuser %}
+<h3>Создать объявление</h3>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Создать</button>
+</form>
+{% else %}
+<p>Доступ запрещен</p>
+{% endif %}
+
+{% endblock %}
