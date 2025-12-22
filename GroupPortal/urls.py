@@ -30,5 +30,6 @@ urlpatterns = [
     path('forum/', include('forum.urls')),
     path('gallery/', include('gallery.urls')),
     path('portfolio/', include('portfolio.urls', namespace='portfolio')),
+    path('dairy/', include('diary.urls', namespace='dairy')),
     path('accounts/', include('django.contrib.auth.urls')),  # Для login/logout
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
