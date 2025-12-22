@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Poll, Question, Answer, UserResponse
 from django.urls import reverse_lazy
 from django.views.generic import View, CreateView, ListView, DetailView, UpdateView, DeleteView
-from .forms import Answers_set
+from .forms import Answers_set, PollForm, QuestionForm
 
 # Create your views here.
 
@@ -14,7 +14,7 @@ class PollView(ListView):
 class PollCreateView(CreateView):
     template_name = 'polls/poll_form.html'
     model = Poll
-    fields = ['title', 'description', ]
+    form_class = PollForm
 
     def get_success_url(self):
         return reverse_lazy('polls:question-create', kwargs={'poll_id': self.object.id})
@@ -22,7 +22,7 @@ class PollCreateView(CreateView):
 class QuestionCreateView(CreateView):
     template_name = 'polls/question_form.html'
     model = Question
-    fields = ['question_text']
+    form_class = QuestionForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
