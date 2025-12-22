@@ -1,10 +1,5 @@
 from django.contrib import admin
-from .models import Student, Subject, Grade
-
-@admin.register(Student)
-class StudentAdmin(admin.ModelAdmin):
-    list_display = ("full_name", "user")
-    search_fields = ("full_name",)
+from .models import Subject, Grade
 
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):

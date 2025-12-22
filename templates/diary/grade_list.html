@@ -1,7 +1,20 @@
 {%extends 'base.html'%}
 {% block content %}
-<h1> List </h1>
+<h1>Оцінки</h1>
 {% for grade in grades %}
-<p> {{grade.subject}} - {{grade.score}} - {{grade.date}} </p>
+    {% if user.profile.role in 'moderator, admin' %}
+        <p> {{grade.student.user.username}}: {{grade.subject}} - {{grade.score}} ({{grade.date}}) 
+            <a href="{% url 'dairy:grade-edit' grade.pk %}">Змінити</a>
+            <a href="{% url 'dairy:grade-delete' grade.pk %}">Видалити</a>
+        </p>
+    {% else %}
+        <p> {{grade.subject}} - {{grade.score}} ({{grade.date}})</p>
+    {% endif %}
+{% empty %}
+    <p>Оцінок ще немає</p>
 {% endfor %}
+
+{% if user.profile.role in 'moderator, admin' %}
+    <p><a href="{% url 'dairy:grade-add' %}">Поставити оцінку</a></p>
+{% endif %}
 {% endblock %}
