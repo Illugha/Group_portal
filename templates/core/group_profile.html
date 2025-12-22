@@ -21,7 +21,7 @@
             {% for user in users %}
                 <li class="list-group-item">
                     {{ user.username }} (Роль: {{ user.profile.get_role_display }})
-                    <a href="{% url 'portfolio:detail' user.pk %}" class="btn btn-sm btn-info float-end">Переглянути портфоліо</a>
+                    <a href="{% url 'portfolio:user_portfolio' username=user.username %}" class="btn btn-sm btn-info float-end">Переглянути портфоліо</a>
                 </li>
             {% endfor %}
         </ul>

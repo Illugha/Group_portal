@@ -15,7 +15,7 @@
             <p><strong>Роль:</strong> {{ profile.get_role_display }}</p>
             <p><strong>Біографія:</strong> {{ profile.bio|linebreaks|default:"Біографія відсутня" }}</p>
             <a href="{% url 'dairy:grade-list' %}" class="btn btn-primary">Переглянути щоденник</a>
-            <a href="#" class="btn btn-primary">Переглянути моє портфоліо</a>
+            <a href="{% url 'portfolio:list' %}" class="btn btn-primary">Переглянути моє портфоліо</a>
             <a href="{% url 'core:user_profile_edit' %}" class="btn btn-secondary">Редагувати профіль</a>
         </div>
     </div>

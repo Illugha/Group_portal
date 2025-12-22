@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 from .models import Portfolio, Screenshot, Attachment, ExternalLink
 from .forms import PortfolioForm
@@ -28,6 +29,24 @@ class PortfolioDeleteView(LoginRequiredMixin, OwnerRequiredMixin, DeleteView):
     model = Portfolio
     template_name = 'portfolio/portfolio_confirm_delete.html'
     success_url = reverse_lazy('portfolio:list')
+
+
+# Список проектів з портфоліо чужого користувача
+class UserPortfolioView(LoginRequiredMixin, ListView):
+    model = Portfolio
+    template_name = 'portfolio/user_portfolio.html'
+    context_object_name = 'portfolio_items'
+    paginate_by = 6
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs['username'])
+        return Portfolio.objects.filter(owner=user).order_by('-created_at')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile_user'] = get_object_or_404(User, username=self.kwargs['username']).profile
+        return context
+
 
 @login_required
 def portfolio_create(request):

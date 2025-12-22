@@ -9,4 +9,5 @@ urlpatterns = [
     path('<int:pk>/', views.PortfolioDetailView.as_view(), name='detail'),
     path('<int:pk>/edit/', views.portfolio_update, name='update'),
     path('<int:pk>/delete/', views.PortfolioDeleteView.as_view(), name='delete'),
+    path('<str:username>/', views.UserPortfolioView.as_view(), name='user_portfolio'),
 ]

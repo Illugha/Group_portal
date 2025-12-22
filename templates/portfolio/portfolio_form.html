@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>{% if portfolio %}Редагувати{% else %}Створити{% endif %} портфоліо</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}Портфоліо{% endblock %}
+{% block content %}
     <h1>{% if portfolio %}Редагувати{% else %}Створити{% endif %} портфоліо</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -22,8 +18,7 @@
             <input type="url" name="link_url" placeholder="https://example.com">
         </div>
 
-        <button type="submit">Зберегти</button>
+        <button type="submit" class="btn btn-primary mt-2">Зберегти</button>
+        <a href="{% url 'portfolio:list' %}" class="btn btn-danger mt-2">Назад</a>
     </form>
-    <p><a href="{% url 'portfolio:list' %}">Назад</a></p>
-</body>
-</html>
+{% endblock %}
