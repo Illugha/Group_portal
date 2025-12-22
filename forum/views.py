@@ -63,7 +63,8 @@ class PostCreationView(CreateView):
         form.instance.theme = Theme.objects.get(pk=self.kwargs['pk'])
         return super().form_valid(form)
     def get_success_url(self):
-        return reverse('theme-detail', kwargs={'pk': self.object.pk})
+        th = self.object.theme
+        return reverse('theme-detail', kwargs={'pk': th.pk})
     
 
 class ThemeDeletionView(DeleteView):

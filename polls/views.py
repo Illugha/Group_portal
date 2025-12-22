@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from .models import Poll, Question, Answer
+from .models import Poll, Question, Answer, UserResponse
 from django.urls import reverse_lazy
 from django.views.generic import View, CreateView, ListView, DetailView, UpdateView, DeleteView
-from .forms import Answers_set
+from .forms import Answers_set, PollForm, QuestionForm
 
 # Create your views here.
 
@@ -14,7 +14,7 @@ class PollView(ListView):
 class PollCreateView(CreateView):
     template_name = 'polls/poll_form.html'
     model = Poll
-    fields = ['title', 'description', ]
+    form_class = PollForm
 
     def get_success_url(self):
         return reverse_lazy('polls:question-create', kwargs={'poll_id': self.object.id})
@@ -22,7 +22,7 @@ class PollCreateView(CreateView):
 class QuestionCreateView(CreateView):
     template_name = 'polls/question_form.html'
     model = Question
-    fields = ['question_text']
+    form_class = QuestionForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -72,11 +72,23 @@ class PollDetailView(DetailView):
     model = Poll
     context_object_name = 'poll'
 
-class PollUpdateView(UpdateView):
-    template_name = 'polls/poll_form.html'
-    model = Poll
-    fields = ['title', 'description', ]
-    success_url = '/polls/'
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        poll = self.object
+        if UserResponse.objects.filter(user=request.user, question__poll=poll).exists():
+            return redirect('polls:poll-list')  # Користувач вже відповів на це опитування
+        for question in poll.questions.all():
+            selected_answer_id = request.POST.get(f'question_{question.id}')
+            if selected_answer_id:
+                answer = question.answers.get(id=selected_answer_id)
+                answer.votes += 1
+                answer.save()
+                UserResponse.objects.create(
+                    user=request.user,
+                    question=question,
+                    selected_answer=answer
+                )
+        return redirect('polls:poll-list')
 
 class PollDeleteView(DeleteView):
     template_name = 'polls/poll_confirm_delete.html'

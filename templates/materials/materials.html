@@ -7,10 +7,10 @@
 <div class="container">
     <div class="card shadow-sm p-3 mb-5 bg-body rounded">
         <div class="card-body">
-            <h1 class="card-title mb-3">Materials</h1>
+            <h1 class="card-title mb-3">Матеріали</h1>
 
             {% if user.is_authenticated and user.profile.role in 'admin, moderator' %}
-                <a href="{% url 'materials:material-create' %}" class="btn btn-success mb-2 mt-2">Add New Material</a>
+                <a href="{% url 'materials:material-create' %}" class="btn btn-success mb-2 mt-2">Додати новий матеріал</a>
             {% endif %}
 
             {% for material in materials %}
@@ -45,13 +45,13 @@
                     {% endif %}
 
                     <p class="mt-2">
-                    <em>Created at: {{ material.created_at }}</em><br>
-                    <em>Last updated: {{ material.updated_at }}</em>
+                    <em>Створено: {{ material.created_at }}</em><br>
+                    <em>Останні зміни: {{ material.updated_at }}</em>
                     </p>
 
                     {% if user.is_authenticated and user.profile.role in 'admin, moderator' %}
-                        <a href="{% url 'materials:material-update' material.id %}" class="btn btn-primary mb-4">Update</a>
-                        <a href="{% url 'materials:material-delete' material.id %}" class="btn btn-danger ms-1 mb-4">Delete</a>
+                        <a href="{% url 'materials:material-update' material.id %}" class="btn btn-primary mb-4">Оновити</a>
+                        <a href="{% url 'materials:material-delete' material.id %}" class="btn btn-danger ms-1 mb-4">Видалити</a>
                     {% endif %}
                 </div>
                 {% if not forloop.last %}

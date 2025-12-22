@@ -1,0 +1,65 @@
+[
+    {
+        "model": "auth.user",
+        "pk": 1,
+        "fields": {
+            "username": "admin",
+            "password": "pbkdf2_sha256$600000$FhJ2kakG$2M9tmyKtRWMdXL1HzY6oQeI6ytpDqRrrdc6W8TPc3sg=",
+            "is_superuser": true,
+            "is_staff": true,
+            "is_active": true
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 2,
+        "fields": {
+            "username": "student1",
+            "password": "pbkdf2_sha256$600000$TAmQLHcDmiiVC37cJ8$UuCIgEfP3jByVmu6z3mMX2VssIaf0M7lC3URwq4eq7E=",
+            "is_staff": false,
+            "is_active": true
+        }
+    },
+    {
+        "model": "diary.student",
+        "pk": 1,
+        "fields": {
+            "user": 2,
+            "full_name": "Іван Іваненко"
+        }
+    },
+    {
+        "model": "diary.subject",
+        "pk": 1,
+        "fields": {
+            "name": "Математика"
+        }
+    },
+    {
+        "model": "diary.subject",
+        "pk": 2,
+        "fields": {
+            "name": "Українська мова"
+        }
+    },
+    {
+        "model": "diary.grade",
+        "pk": 1,
+        "fields": {
+            "student": 1,
+            "subject": 1,
+            "score": 10,
+            "date": "2024-09-01"
+        }
+    },
+    {
+        "model": "diary.grade",
+        "pk": 2,
+        "fields": {
+            "student": 1,
+            "subject": 2,
+            "score": 8,
+            "date": "2024-09-03"
+        }
+    }
+]
