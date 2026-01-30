@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Портфоліо{% endblock %}
+{% block content %}
+    <h1>{% if portfolio %}Редагувати{% else %}Створити{% endif %} портфоліо</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <label>Скріншоти (можна декілька):</label>
+        <input type="file" name="screenshots" multiple>
+
+        <label>Файли (можна декілька):</label>
+        <input type="file" name="attachments" multiple>
+
+        <h4>Посилання:</h4>
+        <div>
+            <input type="text" name="link_name" placeholder="Назва посилання">
+            <input type="url" name="link_url" placeholder="https://example.com">
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2">Зберегти</button>
+        <a href="{% url 'portfolio:list' %}" class="btn btn-danger mt-2">Назад</a>
+    </form>
+{% endblock %}

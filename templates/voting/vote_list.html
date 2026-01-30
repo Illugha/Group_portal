@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Голосування{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Голосування</h1>
+        {% if user.is_staff or user.groups.all.0.name == 'Moderators' %}
+        <a href="{% url 'voting:vote_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Створити голосування
+        </a>
+        {% endif %}
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if votes %}
+    <div class="row">
+        {% for vote in votes %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 {% if not vote.is_active %}border-secondary{% endif %}">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ vote.title }}</h5>
+                    {% if not vote.is_active %}
+                    <span class="badge bg-secondary">Неактивне</span>
+                    {% elif not vote.is_open %}
+                    <span class="badge bg-warning">Завершено</span>
+                    {% elif vote.id in user_votes %}
+                    <span class="badge bg-success">Проголосовано</span>
+                    {% else %}
+                    <span class="badge bg-info">Активне</span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ vote.description|truncatewords:30 }}</p>
+                    
+                    <div class="text-muted small mb-3">
+                        <i class="bi bi-person"></i> {{ vote.created_by.username }}
+                        <br>
+                        <i class="bi bi-calendar"></i> {{ vote.created_at|date:"d.m.Y H:i" }}
+                        <br>
+                        <i class="bi bi-bar-chart"></i> Голосів: {{ vote.total_votes }}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'voting:vote_detail' vote.pk %}" class="btn btn-sm btn-primary">
+                            {% if vote.id in user_votes %}
+                            Переглянути
+                            {% else %}
+                            Голосувати
+                            {% endif %}
+                        </a>
+                        <a href="{% url 'voting:vote_results' vote.pk %}" class="btn btn-sm btn-outline-info">
+                            Результати
+                        </a>
+                        
+                        {% if user.is_staff or user.groups.all.0.name == 'Moderators' %}
+                        <a href="{% url 'voting:vote_update' vote.pk %}" class="btn btn-sm btn-outline-warning">
+                            Редагувати
+                        </a>
+                        <a href="{% url 'voting:vote_delete' vote.pk %}" class="btn btn-sm btn-outline-danger">
+                            Видалити
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Пагінація -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Попередня</a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Наступна</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="alert alert-info text-center">
+        <h4>Голосування відсутні</h4>
+        <p>Наразі немає активних голосувань.</p>
+        {% if user.is_staff or user.groups.all.0.name == 'Moderators' %}
+        <a href="{% url 'voting:vote_create' %}" class="btn btn-primary">
+            Створити перше голосування
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

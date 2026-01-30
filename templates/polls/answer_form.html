@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 720px;">
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <h3 class="card-title mb-3">Add answers</h3>
+
+      <p class="text-muted mb-4">
+        Question: <strong>{{ question.question_text }}</strong><br>
+        Poll: <strong>{{ poll.title }}</strong>
+      </p>
+
+      <form method="post">
+        {% csrf_token %}
+        {{ answers.management_form }}
+
+        {% for form in answers %}
+          <div class="card mb-3 bg-light border-0">
+            <div class="card-body">
+
+              {{ form.id }}
+
+              <div class="mb-3">
+                <label class="form-label">Answer</label>
+                {{ form.answer_text }}
+                {% if form.answer_text.errors %}
+                  <div class="text-danger small mt-1">
+                    {{ form.answer_text.errors }}
+                  </div>
+                {% endif %}
+              </div>
+
+              {% if form.instance.pk %}
+                <div class="form-check">
+                  {{ form.DELETE }}
+                  <label class="form-check-label" for="{{ form.DELETE.id_for_label }}">
+                    Delete this answer
+                  </label>
+                </div>
+              {% endif %}
+
+            </div>
+          </div>
+        {% endfor %}
+
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-success">
+            Save answers
+          </button>
+
+          <a href="{% url 'polls:question-create' poll.id %}" class="btn btn-secondary">
+            Add question
+          </a>
+
+          <a href="{% url 'polls:poll-list' %}" class="btn btn-outline-primary ms-auto">
+            Poll list
+          </a>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

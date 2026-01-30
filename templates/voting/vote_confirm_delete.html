@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Видалити голосування{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'voting:vote_list' %}">Голосування</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'voting:vote_detail' vote.pk %}">{{ vote.title }}</a></li>
+            <li class="breadcrumb-item active">Видалення</li>
+        </ol>
+    </nav>
+
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <h2 class="mb-0">⚠️ Підтвердження видалення</h2>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <h4 class="alert-heading">Увага!</h4>
+                <p>Ви впевнені, що хочете видалити це голосування?</p>
+                <hr>
+                <p class="mb-0">Ця дія <strong>незворотна</strong>. Всі голоси та варіанти відповідей будуть видалені назавжди.</p>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ vote.title }}</h5>
+                    <p class="card-text">{{ vote.description }}</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Створено:</strong> {{ vote.created_by.username }}</li>
+                        <li><strong>Дата створення:</strong> {{ vote.created_at|date:"d.m.Y H:i" }}</li>
+                        <li><strong>Голосів:</strong> {{ vote.total_votes }}</li>
+                        <li><strong>Варіантів:</strong> {{ vote.options.count }}</li>
+                    </ul>
+                </div>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        <i class="bi bi-trash"></i> Так, видалити
+                    </button>
+                    <a href="{% url 'voting:vote_detail' vote.pk %}" class="btn btn-secondary btn-lg">
+                        <i class="bi bi-x-circle"></i> Скасувати
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.gap-2 {
+    gap: 0.5rem;
+}
+</style>
+{% endblock %}

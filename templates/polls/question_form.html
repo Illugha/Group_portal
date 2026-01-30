@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <h3 class="card-title text-center mb-4">
+        Створити питання для опитування:
+        <span class="text-primary">{{ poll.title }}</span>
+      </h3>
+
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+          {{ form.as_p }}
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-4">
+          <a href="{% url 'polls:poll-create' %}" class="btn btn-outline-secondary">
+            Назад
+          </a>
+
+          <button type="submit" class="btn btn-primary px-4">
+            Далі
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Профіль {{ profile.user.username }}{% endblock %}
+{% block content %}
+    <h1 class="my-4">Профіль користувача: {{ profile.user.username }}</h1>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            {% if profile.avatar %}
+                <img src="{{ profile.avatar.url }}" class="card-img-top img-fluid rounded-circle" alt="Аватар" style="max-width: 150px;">
+            {% else %}
+                <img src="{{ default_avatar_url }}" class="card-img-top img-fluid rounded-circle" alt="Аватар за замовчуванням" style="max-width: 150px;">
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <p><strong>Роль:</strong> {{ profile.get_role_display }}</p>
+            <p><strong>Біографія:</strong> {{ profile.bio|linebreaks|default:"Біографія відсутня" }}</p>
+            <a href="{% url 'dairy:grade-list' %}" class="btn btn-primary">Переглянути щоденник</a>
+            <a href="{% url 'portfolio:list' %}" class="btn btn-primary">Переглянути моє портфоліо</a>
+            <a href="{% url 'core:user_profile_edit' %}" class="btn btn-secondary">Редагувати профіль</a>
+        </div>
+    </div>
+{% endblock %}

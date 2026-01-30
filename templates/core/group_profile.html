@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}{{ group.name }}{% endblock %}
+{% block content %}
+    <h1 class="my-4">{{ group.name }}</h1>
+
+    {% if group.logo %}
+        <img src="{{ group.logo.url }}" class="img-fluid mb-3" alt="Логотип групи" style="max-width: 200px;">
+    {% endif %}
+    <p>{{ group.description|linebreaks }}</p>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Ласкаво просимо до порталу!</h5>
+            <p class="card-text">Використовуйте меню для доступу до голосувань, форуму, матеріалів та інших сторінок.</p>
+        </div>
+    </div>
+
+    <h5 class="my-4">Учасники групи</h5>
+    {% if users %}
+        <ul class="list-group">
+            {% for user in users %}
+                <li class="list-group-item">
+                    {{ user.username }} (Роль: {{ user.profile.get_role_display }})
+                    <a href="{% url 'portfolio:user_portfolio' username=user.username %}" class="btn btn-sm btn-info float-end">Переглянути портфоліо</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="alert alert-info">Наразі немає зареєстрованих учасників.</p>
+    {% endif %}
+{% endblock %}
